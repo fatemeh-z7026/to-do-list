@@ -47,6 +47,7 @@ function toDoGenerator(toDoList) {
     newIconCheck.className = "fa fa-solid-o fa-check check";
 
     newIconCheck.addEventListener("click", function () {
+      doneTodo(todo.id);
       newSpan.classList.toggle("active");
     });
     newIconContainer.append(newIconTrash, newIconCheck);
@@ -59,13 +60,26 @@ function toDoGenerator(toDoList) {
     listGroup.append(newLi);
   });
 }
-//todoId = get id of element that we want to remove
-function removeToDo(a) {
+function doneTodo(a) {
   console.log(a);
   let localStorageToDo = JSON.parse(localStorage.getItem("todo"));
   toDoArray = localStorageToDo;
 
-//find item from array that has the same id as the id that was click
+  //find item from array that has the same id as the id that was click to change complete property status
+  toDoArray.forEach(function (todo) {
+    if (todo.id === a) {
+      todo.complete = !todo.complete;
+    }
+  });
+  setLocalStorage(toDoArray);
+}
+function removeToDo(a) {
+  //a = get id of element that we want to remove
+  console.log(a);
+  let localStorageToDo = JSON.parse(localStorage.getItem("todo"));
+  toDoArray = localStorageToDo;
+
+  //find todo index that has a same id as clicked item id
   let mainTodoIndex = toDoArray.findIndex(function (arrayTodo) {
     return arrayTodo.id === a;
   });
