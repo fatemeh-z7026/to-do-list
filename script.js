@@ -16,6 +16,8 @@ function addNewItem() {
   toDoArray.push(newObj);
   setLocalStorage(toDoArray);
   toDoGenerator(toDoArray);
+
+  inputBox.focus();
 }
 
 function setLocalStorage(toDoList) {
@@ -35,9 +37,12 @@ function toDoGenerator(toDoList) {
     let newIconContainer = $.createElement("div");
     newIconContainer.className = "icon-container";
 
-    newIconTrash.addEventListener("click", function (event) {
-      event.target.parentElement.parentElement.remove();
+    //Pass todo Id As Param To removeToDo Fun
+    newIconTrash.addEventListener("click", function () {
+      removeToDo(todo.id);
     });
+    // newIconTrash.setAttribute('onclick', 'removeToDo(' + todo.id + ')')
+
     let newIconCheck = $.createElement("i");
     newIconCheck.className = "fa fa-solid-o fa-check check";
 
@@ -54,11 +59,29 @@ function toDoGenerator(toDoList) {
     listGroup.append(newLi);
   });
 }
+//todoId = get id of element that we want to remove
+function removeToDo(a) {
+  console.log(a);
+  let localStorageToDo = JSON.parse(localStorage.getItem("todo"));
+  toDoArray = localStorageToDo;
+
+//find item from array that has the same id as the id that was click
+  let mainTodoIndex = toDoArray.findIndex(function (arrayTodo) {
+    return arrayTodo.id === a;
+  });
+
+  toDoArray.splice(mainTodoIndex, 1);
+
+  //update Localstorage and Dom
+  setLocalStorage(toDoArray);
+  toDoGenerator(toDoArray);
+}
+
 function getLocalStorage() {
   //Get Data From LocalStorage
   let localStorageToDo = JSON.parse(localStorage.getItem("todo"));
-   //If Localstorage Be Not false(null) Or (Has Data) Save Gotten Data In "toDoArray"
-   //Push Item At The End Of "toDoArray"
+  //If Localstorage Be Not false(null) Or (Has Data) Save Gotten Data In "toDoArray"
+  //Push Item At The End Of "toDoArray"
   if (localStorageToDo) {
     toDoArray = localStorageToDo;
   }
