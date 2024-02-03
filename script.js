@@ -11,19 +11,21 @@ function addNewItem() {
     title: inputBox.value,
     complete: false,
   };
+  inputBox.value = "";
 
   toDoArray.push(newObj);
   setLocalStorage(toDoArray);
   toDoGenerator(toDoArray);
-  inputBox.value = "";
-  console.log(toDoArray);
 }
 
-function setLocalStorage(a) {
-  localStorage.setItem("todo", JSON.stringify(a));
+function setLocalStorage(toDoList) {
+  localStorage.setItem("todo", JSON.stringify(toDoList));
 }
-function toDoGenerator(a) {
-  a.forEach(() => {
+function toDoGenerator(toDoList) {
+  //Empty todolist to Avoid Adding Previous todos
+  listGroup.innerHTML = "";
+
+  toDoList.forEach((todo) => {
     let newLi = $.createElement("li");
     newLi.className = "list-group-item";
 
@@ -45,14 +47,29 @@ function toDoGenerator(a) {
     newIconContainer.append(newIconTrash, newIconCheck);
 
     let newSpan = $.createElement("span");
-    newSpan.innerHTML = inputBox.value;
+    newSpan.innerHTML = todo.title;
 
     newLi.append(newSpan, newIconContainer);
 
     listGroup.append(newLi);
   });
 }
-
+function getLocalStorage() {
+  //Get Data From LocalStorage
+  let localStorageToDo = JSON.parse(localStorage.getItem("todo"));
+   //If Localstorage Be Not false(null) Or (Has Data) Save Gotten Data In "toDoArray"
+   //Push Item At The End Of "toDoArray"
+  if (localStorageToDo) {
+    toDoArray = localStorageToDo;
+  }
+  //If Localstorage Be false(null) Or (Doesnt Has Data)
+  else {
+    toDoArray = [];
+  }
+  //Show ToDoList In Dom After Reload
+  toDoGenerator(toDoArray);
+}
+window.addEventListener("load", getLocalStorage);
 addBtn.addEventListener("click", function (event) {
   event.preventDefault();
   if (inputBox.value === "" || event.keyCode === 13) {
